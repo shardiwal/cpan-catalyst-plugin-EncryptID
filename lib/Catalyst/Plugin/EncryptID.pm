@@ -16,7 +16,7 @@ Version 0.01
 
 =cut
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 =head1 DESCRIPTION
 
@@ -30,6 +30,7 @@ This will prevent nosy users from trying to iterate all items based on a simple 
 Configuration requires a secret key at a minimum.
 
 Or set the secret key at run time, with:
+
     BEGIN {
 		TestApp->config(
 			name    => 'TestApp',
@@ -64,14 +65,54 @@ sub _cipher {
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
+	package TestApp;
 
-Perhaps a little code snippet.
+	use strict;
+	use warnings;
 
-    use Catalyst::Plugin::EncryptID;
+	use Catalyst qw/EncryptID/;
 
-    my $foo = Catalyst::Plugin::EncryptID->new();
-    ...
+	TestApp->config(
+		name    => 'TestApp',
+		EncryptID => {
+			secret => 'abc123xyz',
+			padding_character => '!'
+		}
+	);
+
+	1;
+
+In Controller
+
+	package TestApp::Controller::Root;
+	use base 'Catalyst::Controller';
+
+	__PACKAGE__->config->{namespace} = '';
+
+	sub index : Private {
+	    my ( $self, $c ) = @_;
+	    $c->res->body('root index');
+	}
+
+	sub encrypt : Global Args(1) {
+	    my ( $self, $c, $id ) = @_;
+	    my $encripted_hash = $c->encrypt_data($id);
+	    ...
+	}
+
+	sub decrypt : Global Args(1) {
+	    my ( $self, $c, $hashid ) = @_;
+	    my $decrypted_string = $c->decrypt_data($hashid);
+	    ...
+	}
+
+	sub validhash : Global Args(1) {
+	    my ( $self, $c, $hashid ) = @_;
+	    my $status = $c->is_valid_encrypt_hash($hashid);
+	    ...
+	}
+
+	1;
 
 =head1 EXPORT
 
