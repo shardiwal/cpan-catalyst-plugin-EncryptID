@@ -31,7 +31,7 @@ WriteMakefile(
             bugtracker => {
                 web => 'https://github.com/shardiwal/cpan-catalyst-plugin-EncryptID/issues'
             },
-            homepage => 'http://perldancer.org/',
+            homepage => 'http://www.catalystframework.org/',
             repository => {
                 type => 'git',
                 url => 'git@github.com:shardiwal/cpan-catalyst-plugin-EncryptID.git',
